@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
+	database "golang-api-clean-architecture/infra/databse"
 	"log"
 	"net/http"
 )
@@ -22,6 +23,9 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
+	//Configure database
+	database.InitPostgres()
+
 	router := mux.NewRouter().StrictSlash(true)
 	// Swagger endpoint
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)

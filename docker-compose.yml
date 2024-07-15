@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: go-example-postgres
+    environment:
+      POSTGRES_USER: example_user
+      POSTGRES_PASSWORD: example_password
+      POSTGRES_DB: go_basic
+      PGUSER: example_user
+    ports:
+      - "5432:5432"
+
