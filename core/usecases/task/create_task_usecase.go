@@ -6,17 +6,17 @@ import (
 	"golang-api-clean-architecture/core/requests"
 )
 
-type CreateTaskUsecase struct {
+type CreateTaskUsecaseImpl struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewCreateTaskUsecase(repo repositories.TaskRepository) *CreateTaskUsecase {
-	return &CreateTaskUsecase{
+func NewCreateTaskUsecase(repo repositories.TaskRepository) *CreateTaskUsecaseImpl {
+	return &CreateTaskUsecaseImpl{
 		taskRepository: repo,
 	}
 }
 
-func (u *CreateTaskUsecase) Execute(taskRequest *requests.TaskRequest) error {
+func (u *CreateTaskUsecaseImpl) Execute(taskRequest *requests.TaskRequest) error {
 	taskModel := &models.Task{
 		Name: taskRequest.Name,
 		Done: taskRequest.Done,

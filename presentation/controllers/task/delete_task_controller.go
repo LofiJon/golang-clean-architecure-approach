@@ -36,11 +36,7 @@ func (c *DeleteTaskController) DeleteTaskByID(w http.ResponseWriter, r *http.Req
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	task, err := c.deleteTaskUsecase.Execute(id)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	task := c.deleteTaskUsecase.Execute(id)
 	w.Header().Set("Content-Type", "application/json")
 
 	json.NewEncoder(w).Encode(task)

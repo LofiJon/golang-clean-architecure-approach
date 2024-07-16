@@ -15,7 +15,6 @@ func NewTaskRouter(
 	deleteTaskController *task.DeleteTaskController,
 ) *mux.Router {
 	router := mux.NewRouter()
-
 	router.HandleFunc("/tasks", createTaskController.CreateTask).Methods("POST")
 	router.HandleFunc("/tasks/paged", pagedTaskController.GetTasks).Methods("GET")
 	router.HandleFunc("/tasks/{id}", getByIdTaskController.GetTaskByID).Methods("GET")

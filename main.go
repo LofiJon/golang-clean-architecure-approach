@@ -5,12 +5,8 @@ import (
 	"net/http"
 
 	httpSwagger "github.com/swaggo/http-swagger"
-	usecases "golang-api-clean-architecture/core/usecases/task"
 	_ "golang-api-clean-architecture/docs" // Import the generated docs
-	"golang-api-clean-architecture/infra/databse"
-	"golang-api-clean-architecture/infra/repositories"
-	"golang-api-clean-architecture/presentation/controllers/task"
-	"golang-api-clean-architecture/presentation/routers"
+	injection "golang-api-clean-architecture/infra/dependency_injection"
 )
 
 // @title Golang Clean Architecture Example
@@ -30,31 +26,8 @@ import (
 
 // @securityDefinitions.basic BasicAuth
 func main() {
-	// Configure database
-	db := database.InitPostgres()
-
-	// Initialize repositories
-	taskRepo := repositories.NewTaskRepository(db)
-
-	// Initialize use cases
-	createTaskUsecase := usecases.NewCreateTaskUsecase(taskRepo)
-	getByIdTaskUsecase := usecases.NewGetByIdTaskUsecase(taskRepo)
-	getAllTasksUsecase := usecases.NewGetAllTasksUsecase(taskRepo)
-	updateTaskUsecase := usecases.NewUpdateTaskUsecase(taskRepo)
-	pageableTaskUsecase := usecases.NewPageableTaskUsecase(taskRepo)
-	deleteTaskUsecase := usecases.NewDeleteTaskUsecase(taskRepo)
-
-	// Initialize controllers
-	createTaskController := task.NewCreateTaskController(createTaskUsecase)
-	getByIdTaskController := task.NewGetByIdTaskController(getByIdTaskUsecase)
-	getAllTasksController := task.NewGetAllTasksController(getAllTasksUsecase)
-	updateTaskController := task.NewUpdateTaskController(updateTaskUsecase)
-	pageableTaskController := task.NewPageableTaskController(pageableTaskUsecase)
-
-	deleteTaskController := task.NewDeleteTaskController(deleteTaskUsecase)
-
 	// Initialize router
-	router := routers.NewTaskRouter(createTaskController, getByIdTaskController, getAllTasksController, updateTaskController, pageableTaskController, deleteTaskController)
+	router := injection.InitializeApp()
 
 	// Swagger endpoint
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)

@@ -5,16 +5,16 @@ import (
 	"golang-api-clean-architecture/core/repositories"
 )
 
-type GetByIdTaskUsecase struct {
+type GetByIdTaskUsecaseImpl struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewGetByIdTaskUsecase(repo repositories.TaskRepository) *GetByIdTaskUsecase {
-	return &GetByIdTaskUsecase{
+func NewGetByIdTaskUsecase(repo repositories.TaskRepository) *GetByIdTaskUsecaseImpl {
+	return &GetByIdTaskUsecaseImpl{
 		taskRepository: repo,
 	}
 }
 
-func (u *GetByIdTaskUsecase) Execute(id string) (models.Task, error) {
+func (u *GetByIdTaskUsecaseImpl) Execute(id string) (models.Task, error) {
 	return u.taskRepository.GetByID(id)
 }

@@ -1,58 +1,50 @@
 package entities
 
 import (
-	"github.com/google/uuid"
 	"golang-api-clean-architecture/core/models"
-	"gorm.io/gorm"
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type TaskEntity struct {
-	BaseEntity
-	Name string `json:"name"`
-	Done bool   `json:"done"`
+	ID        uuid.UUID      `gorm:"type:uuid;default:uuid_generate_v4()"`
+	Name      string         `json:"name"`
+	Done      bool           `json:"done"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"deleted_at" gorm:"index"`
 }
 
-// TableName sets the name of the table in the database.
-func (TaskEntity) TableName() string {
-	return "tasks"
+func (e *TaskEntity) ToCoreTask() *models.Task {
+	var deletedAt *time.Time
+	if e.DeletedAt.Valid {
+		deletedAt = &e.DeletedAt.Time
+	}
+	return &models.Task{
+		BaseModel: models.BaseModel{
+			ID:        e.ID.String(),
+			CreatedAt: e.CreatedAt,
+			UpdatedAt: e.UpdatedAt,
+			DeletedAt: deletedAt,
+		},
+		Name: e.Name,
+		Done: e.Done,
+	}
 }
 
 func ToTaskEntity(task *models.Task) *TaskEntity {
 	id, _ := uuid.Parse(task.ID)
-	var deletedAt gorm.DeletedAt
-	if task.DeletedAt != nil {
-		deletedAt = gorm.DeletedAt{
-			Time:  *task.DeletedAt,
-			Valid: true,
-		}
-	}
-
 	return &TaskEntity{
-		BaseEntity: BaseEntity{
-			ID:        id,
-			CreatedAt: task.CreatedAt,
-			UpdatedAt: task.UpdatedAt,
-			DeletedAt: deletedAt,
+		ID:        id,
+		Name:      task.Name,
+		Done:      task.Done,
+		CreatedAt: task.CreatedAt,
+		UpdatedAt: task.UpdatedAt,
+		DeletedAt: gorm.DeletedAt{
+			Time:  *task.DeletedAt,
+			Valid: task.DeletedAt != nil,
 		},
-		Name: task.Name,
-		Done: task.Done,
-	}
-}
-
-func (t *TaskEntity) ToCoreTask() *models.Task {
-	var deletedAt *time.Time
-	if t.DeletedAt.Valid {
-		deletedAt = &t.DeletedAt.Time
-	}
-	return &models.Task{
-		BaseModel: models.BaseModel{
-			ID:        t.ID.String(),
-			CreatedAt: t.CreatedAt,
-			UpdatedAt: t.UpdatedAt,
-			DeletedAt: deletedAt,
-		},
-		Name: t.Name,
-		Done: t.Done,
 	}
 }

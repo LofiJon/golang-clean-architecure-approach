@@ -1,20 +1,19 @@
 package task
 
 import (
-	"golang-api-clean-architecture/core/contracts/task"
 	"golang-api-clean-architecture/core/repositories"
 )
 
-type deleteTaskUsecaseImpl struct {
+type DeleteTaskUsecaseImpl struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewDeleteTaskUsecase(repo repositories.TaskRepository) task.DeleteTask {
-	return &deleteTaskUsecaseImpl{
+func NewDeleteTaskUsecase(repo repositories.TaskRepository) *DeleteTaskUsecaseImpl {
+	return &DeleteTaskUsecaseImpl{
 		taskRepository: repo,
 	}
 }
 
-func (u *deleteTaskUsecaseImpl) Execute(id string) (error, error) {
-	return u.taskRepository.Delete(id), nil
+func (u *DeleteTaskUsecaseImpl) Execute(id string) error {
+	return u.taskRepository.Delete(id)
 }

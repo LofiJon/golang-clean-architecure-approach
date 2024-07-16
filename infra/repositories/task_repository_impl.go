@@ -2,19 +2,20 @@ package repositories
 
 import (
 	"golang-api-clean-architecture/core/models"
-	"golang-api-clean-architecture/core/repositories"
-	_ "golang-api-clean-architecture/core/repositories"
+	repository "golang-api-clean-architecture/core/repositories"
 	"golang-api-clean-architecture/infra/entities"
 	"gorm.io/gorm"
 	"time"
 )
 
-var _ repositories.TaskRepository = &TaskRepositoryImpl{}
-
 type TaskRepositoryImpl struct {
 	db *gorm.DB
 }
 
+// Ensure TaskRepositoryImpl implements the TaskRepository interface
+var _ repository.TaskRepository = &TaskRepositoryImpl{}
+
+// NewTaskRepository creates a new TaskRepositoryImpl
 func NewTaskRepository(db *gorm.DB) *TaskRepositoryImpl {
 	return &TaskRepositoryImpl{db}
 }
@@ -22,6 +23,15 @@ func NewTaskRepository(db *gorm.DB) *TaskRepositoryImpl {
 func (r *TaskRepositoryImpl) Create(task *models.Task) error {
 	taskEntity := entities.ToTaskEntity(task)
 	return r.db.Create(taskEntity).Error
+}
+
+func (r *TaskRepositoryImpl) GetByID(id string) (models.Task, error) {
+	var taskEntity entities.TaskEntity
+	err := r.db.First(&taskEntity, "id = ?", id).Error
+	if err != nil {
+		return models.Task{}, err
+	}
+	return *taskEntity.ToCoreTask(), nil
 }
 
 func (r *TaskRepositoryImpl) GetAll() ([]models.Task, error) {
@@ -32,19 +42,11 @@ func (r *TaskRepositoryImpl) GetAll() ([]models.Task, error) {
 	}
 
 	var tasks []models.Task
-	for _, taskEntity := range taskEntities {
-		tasks = append(tasks, *taskEntity.ToCoreTask())
+	for _, entity := range taskEntities {
+		tasks = append(tasks, *entity.ToCoreTask())
 	}
-	return tasks, nil
-}
 
-func (r *TaskRepositoryImpl) GetByID(id string) (models.Task, error) {
-	var taskEntity entities.TaskEntity
-	err := r.db.First(&taskEntity, "id = ?", id).Error
-	if err != nil {
-		return models.Task{}, err
-	}
-	return *taskEntity.ToCoreTask(), nil
+	return tasks, nil
 }
 
 func (r *TaskRepositoryImpl) Update(task *models.Task) error {
@@ -58,7 +60,8 @@ func (r *TaskRepositoryImpl) Delete(id string) error {
 		return err
 	}
 
-	taskEntity.DeletedAt = gorm.DeletedAt{Time: time.Now(), Valid: true}
+	taskEntity.DeletedAt.Valid = true
+	taskEntity.DeletedAt.Time = time.Now()
 	return r.db.Save(&taskEntity).Error
 }
 
