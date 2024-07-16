@@ -1,15 +1,20 @@
 package task
 
-import "golang-api-clean-architecture/core/repositories"
+import (
+	"golang-api-clean-architecture/core/models"
+	"golang-api-clean-architecture/core/repositories"
+)
 
-type FindByIdUsecaseImpl struct {
+type GetByIdTaskUsecase struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewGetByIdTaskUsecase(repo repositories.TaskRepository) *FindByIdUsecaseImpl {
-	return &FindByIdUsecaseImpl{repo}
+func NewGetByIdTaskUsecase(repo repositories.TaskRepository) *GetByIdTaskUsecase {
+	return &GetByIdTaskUsecase{
+		taskRepository: repo,
+	}
 }
 
-func (uc *FindByIdUsecaseImpl) FindById(id string) (interface{}, error) {
-	return uc.taskRepository.GetByID(id)
+func (u *GetByIdTaskUsecase) Execute(id string) (models.Task, error) {
+	return u.taskRepository.GetByID(id)
 }

@@ -23,7 +23,7 @@ func (u *pageableTaskUsecase) GetTasks(pageRequest requests.PageRequest) (dtos.P
 		return dtos.PageableDto{}, err
 	}
 
-	tasks, err := u.taskRepository.Pageable(pageRequest.Page, pageRequest.Size)
+	tasks, err := u.taskRepository.GetPaged(pageRequest.Page, pageRequest.Size)
 	if err != nil {
 		return dtos.PageableDto{}, err
 	}
@@ -36,7 +36,7 @@ func (u *pageableTaskUsecase) GetTasks(pageRequest requests.PageRequest) (dtos.P
 	return dtos.PageableDto{
 		Page:       pageRequest.Page,
 		Size:       pageRequest.Size,
-		TotalItems: totalItems,
+		TotalItems: int(totalItems),
 		TotalPages: totalPages,
 		Items:      tasks,
 	}, nil

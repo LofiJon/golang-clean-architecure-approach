@@ -8,6 +8,6 @@ type TaskRepository interface {
 	GetByID(id string) (models.Task, error)
 	Update(task *models.Task) error
 	Delete(id string) error
-	Count() (int, error)
-	Pageable(page, limit int) ([]models.Task, error)
+	Count() (int64, error)
+	GetPaged(page, size int) ([]models.Task, error)
 }

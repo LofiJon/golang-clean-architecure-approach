@@ -1,15 +1,23 @@
 package task
 
-import "golang-api-clean-architecture/core/repositories"
+import (
+	"golang-api-clean-architecture/core/contracts/task"
+	"golang-api-clean-architecture/core/models"
+	"golang-api-clean-architecture/core/repositories"
+)
 
-type GetAllTasksUsecase struct {
+var _ task.GetAllTasksUsecase = &GetAllTasksUsecaseImpl{}
+
+type GetAllTasksUsecaseImpl struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewGetAllTaskUsecase(repo repositories.TaskRepository) *GetAllTasksUsecase {
-	return &GetAllTasksUsecase{repo}
+func NewGetAllTasksUsecase(repo repositories.TaskRepository) *GetAllTasksUsecaseImpl {
+	return &GetAllTasksUsecaseImpl{
+		taskRepository: repo,
+	}
 }
 
-func (uc *GetAllTasksUsecase) GetAll() (interface{}, error) {
-	return uc.taskRepository.GetAll()
+func (u *GetAllTasksUsecaseImpl) Execute() ([]models.Task, error) {
+	return u.taskRepository.GetAll()
 }

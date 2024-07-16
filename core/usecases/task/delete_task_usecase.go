@@ -15,6 +15,6 @@ func NewDeleteTaskUsecase(repo repositories.TaskRepository) task.DeleteTask {
 	}
 }
 
-func (u *deleteTaskUsecaseImpl) Execute(id string) error {
-	return u.taskRepository.Delete(id)
+func (u *deleteTaskUsecaseImpl) Execute(id string) (error, error) {
+	return u.taskRepository.Delete(id), nil
 }

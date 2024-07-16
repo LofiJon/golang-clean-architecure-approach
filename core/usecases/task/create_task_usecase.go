@@ -1,7 +1,6 @@
 package task
 
 import (
-	"golang-api-clean-architecture/core/contracts/task"
 	"golang-api-clean-architecture/core/models"
 	"golang-api-clean-architecture/core/repositories"
 	"golang-api-clean-architecture/core/requests"
@@ -11,8 +10,10 @@ type CreateTaskUsecase struct {
 	taskRepository repositories.TaskRepository
 }
 
-func NewCreateTaskUsecase(repo repositories.TaskRepository) task.CreateTask {
-	return &CreateTaskUsecase{taskRepository: repo}
+func NewCreateTaskUsecase(repo repositories.TaskRepository) *CreateTaskUsecase {
+	return &CreateTaskUsecase{
+		taskRepository: repo,
+	}
 }
 
 func (u *CreateTaskUsecase) Execute(taskRequest *requests.TaskRequest) error {

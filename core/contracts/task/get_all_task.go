@@ -1,5 +1,7 @@
 package task
 
-type GetAllTask interface {
-	Execute() error
+import "golang-api-clean-architecture/core/models"
+
+type GetAllTasksUsecase interface {
+	Execute() ([]models.Task, error)
 }

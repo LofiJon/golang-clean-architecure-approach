@@ -8,8 +8,6 @@ import (
 	"log"
 )
 
-//db, err := gorm.Open(postgres.Open(), &gorm.Config{})
-
 func InitPostgres() *gorm.DB {
 	db, err := gorm.Open(postgres.Open("host=localhost user=example_user password=example_password dbname=go_basic port=5432 sslmode=disable"), &gorm.Config{})
 	if err != nil {
@@ -18,9 +16,7 @@ func InitPostgres() *gorm.DB {
 
 	// Add extension for UUID if not exists
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
-
 	db.AutoMigrate(&entities.TaskEntity{})
-
 	seeds.TaskSeed(db)
 
 	log.Println("Database migrated")
