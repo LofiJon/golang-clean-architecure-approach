@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"errors"
 	"golang-api-clean-architecture/core/models"
 	repository "golang-api-clean-architecture/core/repositories"
 	"golang-api-clean-architecture/infra/entities"
@@ -50,10 +51,16 @@ func (r *TaskRepositoryImpl) GetAll() ([]models.Task, error) {
 }
 
 func (r *TaskRepositoryImpl) Update(task *models.Task) error {
+	if task == nil {
+		return errors.New("task is nil")
+	}
+
 	taskEntity := entities.ToTaskEntity(task)
+	if taskEntity == nil {
+		return errors.New("failed to convert task to entity")
+	}
 	return r.db.Save(taskEntity).Error
 }
-
 func (r *TaskRepositoryImpl) Delete(id string) error {
 	var taskEntity entities.TaskEntity
 	if err := r.db.First(&taskEntity, "id = ?", id).Error; err != nil {

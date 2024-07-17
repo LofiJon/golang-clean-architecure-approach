@@ -35,16 +35,24 @@ func (e *TaskEntity) ToCoreTask() *models.Task {
 }
 
 func ToTaskEntity(task *models.Task) *TaskEntity {
+	if task == nil {
+		return nil
+	}
+
 	id, _ := uuid.Parse(task.ID)
+	var deletedAt gorm.DeletedAt
+	if task.DeletedAt != nil {
+		deletedAt = gorm.DeletedAt{
+			Time:  *task.DeletedAt,
+			Valid: task.DeletedAt != nil,
+		}
+	}
 	return &TaskEntity{
 		ID:        id,
 		Name:      task.Name,
 		Done:      task.Done,
 		CreatedAt: task.CreatedAt,
 		UpdatedAt: task.UpdatedAt,
-		DeletedAt: gorm.DeletedAt{
-			Time:  *task.DeletedAt,
-			Valid: task.DeletedAt != nil,
-		},
+		DeletedAt: deletedAt,
 	}
 }
