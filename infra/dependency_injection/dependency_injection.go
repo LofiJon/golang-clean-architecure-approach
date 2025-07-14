@@ -3,7 +3,8 @@ package dependency_injection
 import (
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"golang-api-clean-architecture/core/contracts/task"
+
+	taskContracts "golang-api-clean-architecture/core/contracts/task"
 	taskUsecases "golang-api-clean-architecture/core/usecases/task"
 	"golang-api-clean-architecture/infra/databse"
 	"golang-api-clean-architecture/infra/repositories"
@@ -11,18 +12,23 @@ import (
 )
 
 func InitializeApp() *mux.Router {
+	// Conexão com o banco
 	db := database.InitPostgres()
 
+	// Repository
 	taskRepo := repositories.NewTaskRepository(db)
 
-	
-	createTask := taskUsecases.NewCreateTaskUsecase(taskRepo)
-	getByIdTask := taskUsecases.NewGetByIdTaskUsecase(taskRepo)
-	getAllTasks := taskUsecases.NewGetAllTasksUsecase(taskRepo)
-	updateTask := taskUsecases.NewUpdateTaskUsecase(taskRepo)
-	deleteTask := taskUsecases.NewDeleteTaskUsecase(taskRepo)
-	pageableTask := taskUsecases.NewPageableTaskUsecase(taskRepo)
+	// UseCases (injeção por interface)
+	var (
+		createTask    taskContracts.CreateTask = taskUsecases.NewCreateTaskUsecase(taskRepo)
+		getByIdTask   taskContracts.GetByIdTask = taskUsecases.NewGetByIdTaskUsecase(taskRepo)
+		getAllTasks   taskContracts.GetAllTasks = taskUsecases.NewGetAllTasksUsecase(taskRepo)
+		updateTask    taskContracts.UpdateTask = taskUsecases.NewUpdateTaskUsecase(taskRepo)
+		deleteTask    taskContracts.DeleteTask = taskUsecases.NewDeleteTaskUsecase(taskRepo)
+		pageableTask  taskContracts.PageableTask = taskUsecases.NewPageableTaskUsecase(taskRepo)
+	)
 
+	// Handler unificado
 	taskHandler := task.NewHandler(
 		createTask,
 		getByIdTask,
@@ -32,28 +38,10 @@ func InitializeApp() *mux.Router {
 		pageableTask,
 	)
 
+	// Router
 	router := mux.NewRouter().StrictSlash(true)
 	task.RegisterRoutes(router, taskHandler)
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	return router
-}
-
-func NewHandler(
-	create task.CreateTask,
-	getByID task.GetByIdTask,
-	getAll task.GetAllTasks,
-	update task.UpdateTask,
-	delete task.DeleteTask,
-	pageable task.PageableTask,
-) *Handler {
-	return &Handler{
-		createTaskUsecase:  create,
-		getByIdTaskUsecase: getByID,
-		getAllTasksUsecase: getAll,
-		updateTaskUsecase:  update,
-		deleteTaskUsecase:  delete,
-		pageableTaskUsecase: pageable,
-		validator:           validator.New(),
-	}
 }
