@@ -14,7 +14,6 @@ func InitPostgres() *gorm.DB {
 		log.Fatal("Failed to connect to database: ", err)
 	}
 
-	// Add extension for UUID if not exists
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
 	db.AutoMigrate(&entities.TaskEntity{})
 	seeds.TaskSeed(db)

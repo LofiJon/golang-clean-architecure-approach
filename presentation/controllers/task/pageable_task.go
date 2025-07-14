@@ -11,13 +11,13 @@ import (
 )
 
 // PageableTaskController handles paginated task requests
-type PageableTaskController struct {
+type Handler struct {
 	pageableTaskUsecase task.PageableTask
 	validator           *validator.Validate
 }
 
 // NewPageableTaskController creates a new PageableTaskController
-func NewPageableTaskController(pageableTaskUsecase task.PageableTask) *PageableTaskController {
+func NewHandler(pageableTaskUsecase task.PageableTask) *PageableTaskController {
 	return &PageableTaskController{
 		pageableTaskUsecase: pageableTaskUsecase,
 		validator:           validator.New(),

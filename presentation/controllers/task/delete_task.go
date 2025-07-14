@@ -8,19 +8,17 @@ import (
 	"net/http"
 )
 
-type DeleteTaskController struct {
-	deleteTaskUsecase usecase.DeleteTask
+type Handler struct {
+	deleteTaskUsecase task.DeleteTask
 	validator         *validator.Validate
 }
 
-func NewDeleteTaskController(
-	deleteTaskUsecase usecase.DeleteTask) *DeleteTaskController {
-	return &DeleteTaskController{
+func NewHandler(deleteTaskUsecase task.DeleteTask) *Handler {
+	return &Handler{
 		deleteTaskUsecase: deleteTaskUsecase,
 		validator:         validator.New(),
 	}
 }
-
 // DeleteTask godoc
 // @Summary Delete task by id
 // @Description Delete task by id

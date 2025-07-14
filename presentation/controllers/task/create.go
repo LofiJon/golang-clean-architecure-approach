@@ -8,18 +8,17 @@ import (
 	"net/http"
 )
 
-type CreateTaskController struct {
-	createTaskUsecase task.CreateTask
-	validator         *validator.Validate
+type Handler struct {
+    createTaskUsecase task.CreateTask
+    validator         *validator.Validate
 }
 
-func NewCreateTaskController(createTaskUsecase task.CreateTask) *CreateTaskController {
-	return &CreateTaskController{
-		createTaskUsecase: createTaskUsecase,
-		validator:         validator.New(),
-	}
+func NewHandler(createTaskUsecase task.CreateTask) *Handler {
+    return &Handler{
+        createTaskUsecase: createTaskUsecase,
+        validator:         validator.New(),
+    }
 }
-
 // CreateTask godoc
 // @Summary Create a new task
 // @Description Create a new task with the input payload

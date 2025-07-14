@@ -10,12 +10,12 @@ import (
 	request "golang-api-clean-architecture/core/requests"
 )
 
-type UpdateTaskController struct {
+type Handler struct {
 	updateTaskUsecase usecase.UpdateTask
 	validator         *validator.Validate
 }
 
-func NewUpdateTaskController(updateTaskUsecase usecase.UpdateTask) *UpdateTaskController {
+func NewHandler(updateTaskUsecase usecase.UpdateTask) *UpdateTaskController {
 	return &UpdateTaskController{
 		updateTaskUsecase: updateTaskUsecase,
 		validator:         validator.New(),

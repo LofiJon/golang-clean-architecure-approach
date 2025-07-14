@@ -8,12 +8,12 @@ import (
 	"golang-api-clean-architecture/core/contracts/task"
 )
 
-type GetAllTasksController struct {
+type Handler struct {
 	getAllTasksUsecase task.GetAllTasksUsecase
 	validator          *validator.Validate
 }
 
-func NewGetAllTasksController(getAllTasksUsecase task.GetAllTasksUsecase) *GetAllTasksController {
+func NewHandler(getAllTasksUsecase task.GetAllTasksUsecase) *GetAllTasksController {
 	return &GetAllTasksController{
 		getAllTasksUsecase: getAllTasksUsecase,
 		validator:          validator.New(),

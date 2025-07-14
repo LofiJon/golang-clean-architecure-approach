@@ -9,12 +9,12 @@ import (
 	"golang-api-clean-architecture/core/contracts/task"
 )
 
-type GetByIdTaskController struct {
+type Handler struct {
 	getByIdTaskUsecase task.GetByIdTask
 	validator          *validator.Validate
 }
 
-func NewGetByIdTaskController(
+func NewHandler(
 	getByIdTaskUsecase task.GetByIdTask) *GetByIdTaskController {
 	return &GetByIdTaskController{
 		getByIdTaskUsecase: getByIdTaskUsecase,

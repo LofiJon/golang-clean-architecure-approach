@@ -3,24 +3,19 @@ package routers
 import (
 	"github.com/gorilla/mux"
 	httpSwagger "github.com/swaggo/http-swagger"
-	"golang-api-clean-architecture/presentation/controllers/task"
+	"golang-api-clean-architecture/presentation/task"
 )
 
-func NewTaskRouter(
-	createTaskController *task.CreateTaskController,
-	getByIdTaskController *task.GetByIdTaskController,
-	getAllTasksController *task.GetAllTasksController,
-	updateTaskController *task.UpdateTaskController,
-	pagedTaskController *task.PageableTaskController,
-	deleteTaskController *task.DeleteTaskController,
-) *mux.Router {
+func NewTaskRouter(handler *task.Handler) *mux.Router {
 	router := mux.NewRouter()
-	router.HandleFunc("/tasks", createTaskController.CreateTask).Methods("POST")
-	router.HandleFunc("/tasks/paged", pagedTaskController.GetTasks).Methods("GET")
-	router.HandleFunc("/tasks/{id}", getByIdTaskController.GetTaskByID).Methods("GET")
-	router.HandleFunc("/tasks", getAllTasksController.GetAllTasks).Methods("GET")
-	router.HandleFunc("/tasks/{id}", updateTaskController.UpdateTaskByID).Methods("PUT")
-	router.HandleFunc("/tasks/{id}", deleteTaskController.DeleteTaskByID).Methods("DELETE")
+
+	router.HandleFunc("/tasks", handler.Create).Methods("POST")
+	router.HandleFunc("/tasks/paged", handler.GetPaged).Methods("GET")
+	router.HandleFunc("/tasks/{id}", handler.GetByID).Methods("GET")
+	router.HandleFunc("/tasks", handler.GetAll).Methods("GET")
+	router.HandleFunc("/tasks/{id}", handler.Update).Methods("PUT")
+	router.HandleFunc("/tasks/{id}", handler.Delete).Methods("DELETE")
+
 	router.PathPrefix("/swagger/").Handler(httpSwagger.WrapHandler)
 
 	return router
